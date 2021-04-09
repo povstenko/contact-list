@@ -59,7 +59,7 @@
         class Item extends React.Component {
             constructor(props) {
                 super(props);
-                this.state = { show: false, display: "none", btn: "More"}
+                this.state = { show: false, display: "none", btn: "More" }
                 this.showDetails = this.showDetails.bind(this)
             }
             showDetails(e) {
@@ -94,7 +94,7 @@
                             </div>
                         </div>
                     </div>
-                    <div className="card-footer" id={"details" + this.props.contact.id} style={{display: this.state.display}}>
+                    <div className="card-footer" id={"details" + this.props.contact.id} style={{ display: this.state.display }}>
                         <p><span className="fw-bold">Email:</span> {this.props.contact.email}</p>
                         <p><span className="fw-bold">Address:</span> {this.props.contact.address}</p>
                     </div>
@@ -104,14 +104,24 @@
         class ListItem extends React.Component {
             constructor(props) {
                 super(props)
+                this.state = { items: this.props.data, filter: "Name" }
                 this.filterItems = this.filterItems.bind(this)
-                this.state = { items: this.props.data }
-                console.log(this.state.items)
+                this.filterName = this.filterName.bind(this)
+                this.filterPhone = this.filterPhone.bind(this)
+            }
+
+            filterName(e) {
+                this.setState({ filter: "Name" })
+            }
+            filterPhone(e) {
+                this.setState({ filter: "Phone" })
             }
 
             filterItems(e) {
+                let filter = this.state.filter
                 let filteredItems = this.props.data.filter(function (item) {
-                    return item.name.toLowerCase().search(e.target.value.toLowerCase()) !== -1;
+                    let search_in = filter == "Phone" ? item.phoneNumber : item.name
+                    return search_in.toLowerCase().search(e.target.value.toLowerCase()) !== -1;
                 })
                 this.setState({ items: filteredItems })
             }
@@ -125,8 +135,14 @@
                     </nav>
                     <nav className="navbar navbar-light bg-light shadow-sm">
                         <div className="container">
-                            <input type="text" className="input-group-text" placeholder="Search contacts" onChange={this.filterItems} />
-                            <button type="button" className="btn btn-outline-secondary">Primary</button>
+                            <div className="input-group">
+                                <input type="text" className="form-control" placeholder="Search contacts" onChange={this.filterItems} />
+                                <button className="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">{this.state.filter}</button>
+                                <ul className="dropdown-menu dropdown-menu-end">
+                                    <li><a className="dropdown-item" href="#" onClick={this.filterName}>Name</a></li>
+                                    <li><a className="dropdown-item" href="#" onClick={this.filterPhone}>Phone</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </nav>
                     <div className="container pt-3">
